@@ -13,7 +13,7 @@ def read_VCF(filename):
     header = VCFfile.readline()
     print "0% complete"
     if "VCFv4.1" not in header:
-        print "This script is written for VCFv4.1, and may not work as intendend"
+        print "This script is written for VCFv4.1, and may not work as intended"
     num_lines = sum(1 for line in open(filename))  #setting a counter because the API step is a little slow
     counter = 0
     list_of_variants = []
@@ -125,6 +125,5 @@ def print_output(VCF_info, outfilename):
 def main():
     info_list = read_VCF("Challenge_data.vcf")
     print_output(info_list, "Challenge_output.csv")
-
-
+    print "100% complete"
 main()
