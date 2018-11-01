@@ -11,13 +11,13 @@ Chromosome, Position, Gene, Variant type, Impact, Reference allele, Alternate al
 
 When the variant is intergenic, gene is reported as NA.
 
-The Impact describes type of mutation: whether the variant(s) are intergenic or within a gene. If they are within a gene, they are reported as insertion, deletion, nonsense, missense, synonymous, within the UTR or a splice site, or intronic. In some cases they are labeled as 'complex', which usually indicates multiple SNPs.
+The Impact describes type of mutation if they occur within a transcriptional unit. Categories include insertion, deletion, nonsense, missense, synonymous, within the UTR or a splice site, or intronic. In some cases they are labeled as 'complex', which usually indicates multiple SNPs. If the mutation is not within a transcriptional unit, it's reported as intergenic.
 
 When there are multiple variants in the same position, the alleles are reported within the same column, separated by a colon- the percentage of reads supporting each alternate variant allele are also separated by a colon.
 
 ### To run:
 
-python2.7 read_vcf.py
+>python2.7 read_vcf.py
 
 ### To use on other VCF files
 To change the files that are parsed with this script, or to change the name of the output file, modify lines 126 and 127 of the script, in the main function.
@@ -33,4 +33,4 @@ This script takes about 10 minutes to run on the original VCF file. While it's r
 
 This script was written for VCF format VCFv4.1. It may not be compatible with other VCF file types. 
 
-For other types of VCF files, and additional functionality, the PyVCF Python package, VCFTools, and commands within Samtools may be more useful.
+For other types of VCF files, and additional functionality, the PyVCF Python package, the Broad Institute's GATK tool, VCFTools, and commands within Samtools may be more useful.
