@@ -5,10 +5,6 @@
 
 import requests
 import json
-
-def main():
-    info_list = read_VCF("Challenge_data.vcf")
-    print_output(info_list, "Challenge_output.csv")
     
 
 def read_VCF(filename):
@@ -125,5 +121,10 @@ def print_output(VCF_info, outfilename):
         outfile.write(outstring)
         outfile.write("\r\n")
     outfile.close()
+
+def main():
+    info_list = read_VCF("Challenge_data.vcf")
+    print_output(info_list, "Challenge_output.csv")
+
 
 main()
