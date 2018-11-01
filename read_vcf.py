@@ -1,7 +1,7 @@
 #Script for reading VCF files and outputting a more user friendly table
 #written in python 2.7
 #Anne Sonnenschein
-#10-30-2018
+#11-1-2018
 
 import requests
 import json
@@ -121,6 +121,7 @@ def print_output(VCF_info, outfilename):
     outfile.write("Chromosome,Position,Gene,Variant_type,Impact,Reference_allele,Alternate_alleles,Depth_coverage,Percent_reads_supporting_reference,Percent_reads_supporting_variants\r\n")
     for each_var in VCF_info:
         outstring = ",".join(each_var)
+        outstring.replace(", ",",")
         outfile.write(outstring)
         outfile.write("\r\n")
     outfile.close()

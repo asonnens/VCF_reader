@@ -4,11 +4,16 @@ Anne Sonnenschein
 11/1/2018
 
 ###Purpose
-The script read_vcf.py takes information from a VCF file, annotates it using the ExAc genome browser.
+The script read_vcf.py takes information from a VCF file, annotates it using the Broad Institute's ExAc genome browser, and outputs it to a csv file that can be opened in a text editor or spreadsheet.
 
 Each variant is output as a row, with the headers:
-Chromosome,Position,Gene,Variant_type,Impact,Reference_allele,Alternate_alleles,Depth_coverage,Percent_reads_supporting_reference,Percent_reads_supporting_variants
+Chromosome, Position, Gene, Variant type, Impact, Reference allele, Alternate alleles, Depth coverage, Percent reads supporting reference, Percent reads supporting variants
 
+When the variant is intergenic, gene is reported as NA.
+
+The Impact is describes whether the variant(s) are intergenic or within a gene. If they are within a gene, they are reported as insertion, deletion,nonsense, missense, synonymous, within the UTR or a splice site, or intronic.
+
+When there are multiple variants in the same position, the alleles are reported within the same column, separated by a colon- the percentage of reads supporting each alternate variant allele are also separated by a colon.
 
 ###To run:
 
@@ -16,7 +21,6 @@ python2.7 read_vcf.py
 
 ###To use on other VCF files
 To change the files that are parsed with this script, or to change the name of the output file, modify lines 10 and 11 of the script, in the main function.
-
 
 
 ###Additional notes
