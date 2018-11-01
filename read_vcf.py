@@ -81,7 +81,7 @@ def line_parse(inline):
         alt_sum = alt_count  
         alt_percent = str(100* alt_count/(ref_count + alt_sum))[0:4]  
         ref_percent = str(100* ref_count/(ref_count + alt_sum))[0:4]
-    return_line = [chromosome,position,gene,type,coding_status,ref,alt,depth,ref_percent,alt_percent]
+    return_line = [chromosome,position,gene,type,coding_status,depth,ref_percent,alt_percent,ref,alt]
     return(return_line)
 
 def check_coding(chrom,pos,ref,alt):
@@ -120,7 +120,7 @@ def check_coding(chrom,pos,ref,alt):
 def print_output(VCF_info, outfilename):
     #prints the output of line_parse to a comma separated text file
     outfile = open(outfilename, "w")
-    outfile.write("Chromosome,Position,Gene,Variant_type,Impact,Reference_allele,Alternate_alleles,Depth_coverage,Percent_reads_supporting_reference,Percent_reads_supporting_variants\r\n")
+    outfile.write("Chromosome,Position,Gene,Variant_type,Impact,Depth_coverage,Percent_reads_supporting_reference,Percent_reads_supporting_variants,Reference_allele,Alternate_alleles\r\n")
     for each_var in VCF_info:
         outstring = ",".join(each_var)
         outstring.replace(", ",",")
