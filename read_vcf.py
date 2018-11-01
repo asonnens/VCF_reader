@@ -5,7 +5,7 @@
 
 import requests
 import json
-    
+
 
 def read_VCF(filename):
     #checks VCF version number, sends each variant to the function line_parse
@@ -86,28 +86,34 @@ def line_parse(inline):
 
 def check_coding(chrom,pos,ref,alt):
     #checks if a variant falls within a coding, intronic, or intergenic region by basically turning the API into a string. 
-    response = requests.get("http://exac.hms.harvard.edu/rest/variant/any_covered/" + chrom + "-" + pos + "-" + ref + "-" + alt)
-    data_in_exac = response.json()
+    more_info = requests.get("http://exac.hms.harvard.edu/rest/variant/" + chrom + "-" + pos + "-" + ref + "-" + alt)
     coding = "error"
-    gene = "NA"
-    if data_in_exac == "FALSE":
-        coding = ("no_data")
+    gene = "error"
+    if more_info == "FALSE":
+        coding = "no_data"
+        gene = "no_data"
+        print chrom, pos, " no ExAc match"
     else:
-        more_info = requests.get("http://exac.hms.harvard.edu/rest/variant/" + chrom + "-" + pos + "-" + ref + "-" + alt)
         data = more_info.json()
         decoded = json.dumps(data)
         relevant_info =  decoded[0:100]
         if "null" in relevant_info:
-            coding = "intergenic"
+            coding = "null_no_gene"
+            gene = "null_no_gene"
         else:
             workaround = relevant_info.split(":")[1]
             workaround = workaround.replace("_variant","")
             workaround = workaround.replace('"','')
             workaround = workaround.replace("{","")
-            coding = workaround   
-            gene = relevant_info.split(":")[2]
-            gene = gene.replace('"','')
-            gene = gene.replace("{","")  
+            coding = workaround.strip()  
+            if "}" in coding:              #?? No gene, consequence, etc. information reported for this variant
+                coding = "no_data"
+                gene = "no_data" 
+            else:
+                gene = relevant_info.split(":")[2]
+                gene = gene.replace('"','')
+                gene = gene.replace("{","")  
+                gene = gene.strip()
     return_list = [coding,gene]
     return(return_list)
 
