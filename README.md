@@ -11,7 +11,7 @@ Chromosome, Position, Gene, Variant type, Impact, Reference allele, Alternate al
 
 When the variant is intergenic, gene is reported as NA.
 
-The Impact is describes whether the variant(s) are intergenic or within a gene. If they are within a gene, they are reported as insertion, deletion,nonsense, missense, synonymous, within the UTR or a splice site, or intronic. In some cases they are labeled as 'complex', which usually indicates multiple SNPs.
+The Impact describes type of mutation: whether the variant(s) are intergenic or within a gene. If they are within a gene, they are reported as insertion, deletion, nonsense, missense, synonymous, within the UTR or a splice site, or intronic. In some cases they are labeled as 'complex', which usually indicates multiple SNPs.
 
 When there are multiple variants in the same position, the alleles are reported within the same column, separated by a colon- the percentage of reads supporting each alternate variant allele are also separated by a colon.
 
