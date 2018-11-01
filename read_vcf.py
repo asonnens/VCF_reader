@@ -70,7 +70,7 @@ def line_parse(inline):
     alt_count = coverage_info.split(":")[6]
     ref_percent = "error"
     alt_percent = "error"
-    if "," in alt_count:                 #if there's multiple alleles, reporting frequency for each separated by ":"
+    if "," in alt_count:                 #if there are multiple alleles, frequency for each separated by ":"
         alt_list = alt_count.split(",")
         alt_sum = sum([float(i) for i in alt_list])
         ref_percent = str(100* ref_count/(ref_count + alt_sum))[0:4]
@@ -81,7 +81,7 @@ def line_parse(inline):
         alt_sum = alt_count  
         alt_percent = str(100* alt_count/(ref_count + alt_sum))[0:4]  
         ref_percent = str(100* ref_count/(ref_count + alt_sum))[0:4]
-    return_line = [chromosome, position, gene, type, coding_status, ref, alt, depth,ref_percent,alt_percent]
+    return_line = [chromosome,position,gene,type,coding_status,ref,alt,depth,ref_percent,alt_percent]
     return(return_line)
 
 def check_coding(chrom,pos,ref,alt):
