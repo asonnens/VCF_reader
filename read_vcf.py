@@ -3,6 +3,9 @@
 #Anne Sonnenschein
 #10-30-2018
 
+import requests
+import json
+
 def main():
     info_list = read_VCF("Challenge_data.vcf")
     print_output(info_list, "Challenge_output.csv")
@@ -12,10 +15,17 @@ def read_VCF(filename):
     #checks VCF version number, sends each variant to the function line_parse
     VCFfile = open(filename)
     header = VCFfile.readline()
+    print "0% complete"
     if "VCFv4.1" not in header:
         print "This script is written for VCFv4.1, and may not work as intendend"
+    num_lines = sum(1 for line in open(filename))  #setting a counter because the API step is a little slow
+    counter = 0
     list_of_variants = []
     for line in VCFfile:
+        counter = counter + 1
+        progress = 100 * counter/num_lines
+        if (progress > 5) and (progress%5 == 0):
+            print progress, "% complete"
         if line[0] == "#":
             pass
         else:
@@ -29,10 +39,26 @@ def line_parse(inline):
     myline = inline.split("\t")
     chromosome = myline[0]
     position = myline[1]
+    coding_status = "error"
+    gene = "error"
     ref = myline[3]
     alt = myline[4]
     if "," in alt:                 #checking if multiple variant alleles-- removing commas for future CSV file
+        variant_list = alt.split(",")
+        exac_info_list = [check_coding(chromosome,position,ref,i) for i in variant_list]
+        coding_list = exac_info_list[0]
+        gene_list = exac_info_list[1]  
+        if "intergenic" in coding_list:
+            coding_status = "intergenic"
+            gene = "NA"
+        else:
+            coding_status = ":".join(coding_list)
+            gene = gene_list[0]         
         alt = alt.replace(",",":")
+    else:
+        exac_info_list = check_coding(chromosome,position,ref,alt) 
+        coding_status = exac_info_list[0]
+        gene = exac_info_list[1]
     info = myline[7]
     info_list = info.split(";")
     type = info_list[-1].split("=")[-1]
@@ -59,13 +85,39 @@ def line_parse(inline):
         alt_sum = alt_count  
         alt_percent = str(100* alt_count/(ref_count + alt_sum))[0:4]  
         ref_percent = str(100* ref_count/(ref_count + alt_sum))[0:4]
-    return_line = [chromosome, position, ref, alt, type, depth,ref_percent,alt_percent]
+    return_line = [chromosome, position, gene, type, coding_status, ref, alt, depth,ref_percent,alt_percent]
     return(return_line)
 
+def check_coding(chrom,pos,ref,alt):
+    #checks if a variant falls within a coding, intronic, or intergenic region by basically turning the API into a string. 
+    response = requests.get("http://exac.hms.harvard.edu/rest/variant/any_covered/" + chrom + "-" + pos + "-" + ref + "-" + alt)
+    data_in_exac = response.json()
+    coding = "error"
+    gene = "NA"
+    if data_in_exac == "FALSE":
+        coding = ("no_data")
+    else:
+        more_info = requests.get("http://exac.hms.harvard.edu/rest/variant/" + chrom + "-" + pos + "-" + ref + "-" + alt)
+        data = more_info.json()
+        decoded = json.dumps(data)
+        relevant_info =  decoded[0:100]
+        if "null" in relevant_info:
+            coding = "intergenic"
+        else:
+            workaround = relevant_info.split(":")[1]
+            workaround = workaround.replace("_variant","")
+            workaround = workaround.replace('"','')
+            workaround = workaround.replace("{","")
+            coding = workaround   
+            gene = relevant_info.split(":")[2]
+            gene = gene.replace('"','')
+            gene = gene.replace("{","")  
+    return_list = [coding,gene]
+    return(return_list)
 
 def print_output(VCF_info, outfilename):
     outfile = open(outfilename, "w")
-    outfile.write("Chromosome,Position,Reference_allele,Alternate_alleles,Variant_type,Depth_coverage,Percent_reads_supporting_reference,Percent_reads_supporting_variants\r\n")
+    outfile.write("Chromosome,Position,Gene,Variant_type,Impact,Reference_allele,Alternate_alleles,Depth_coverage,Percent_reads_supporting_reference,Percent_reads_supporting_variants\r\n")
     for each_var in VCF_info:
         outstring = ",".join(each_var)
         outfile.write(outstring)
