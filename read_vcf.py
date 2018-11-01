@@ -23,7 +23,7 @@ def read_VCF(filename):
     list_of_variants = []
     for line in VCFfile:
         counter = counter + 1
-        progress = 100 * counter/num_lines
+        progress = 100 * float(counter)/num_lines
         if (progress > 5) and (progress%5 == 0):
             print progress, "% complete"
         if line[0] == "#":
@@ -116,6 +116,7 @@ def check_coding(chrom,pos,ref,alt):
     return(return_list)
 
 def print_output(VCF_info, outfilename):
+    #prints the output of line_parse to a comma separated text file
     outfile = open(outfilename, "w")
     outfile.write("Chromosome,Position,Gene,Variant_type,Impact,Reference_allele,Alternate_alleles,Depth_coverage,Percent_reads_supporting_reference,Percent_reads_supporting_variants\r\n")
     for each_var in VCF_info:
